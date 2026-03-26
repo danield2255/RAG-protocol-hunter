@@ -1,0 +1,43 @@
+This is a piece of test documentation for our RAG system. 
+For testing purposes we will explain in this documentation how to make a peanut butter and jelly sandwich, and our "policy" around making a peanut butter and jelly sandwich. 
+
+
+Step-By-Step Instructions: 
+1. Retrieve the necessary ingredients from wherever they are held. Ingredients will include:
+- Bread
+- Peanut butter
+- Jelly or jam
+
+* We will allow any form of traditional sliced bread for this project but not any bread adjacent products such as buns, tortillas, or bagels
+** Either chunky or smooth peanut butter will be accepted to use
+*** Jelly and jams not based around the following fruits will be prohibited (grape, strawberry, raspberry)
+
+2. Retrieve a plate or serving apparatus and place it on a stable surface such as a table. 
+
+3. Remove 2 slices of bread from packaging and place them side-by-side on the plate. 
+
+4. Retrieve a butter knife 
+
+* A dull style butter knife must be used, we will not accept knives of sharper varieties
+
+5. Open the container of peanut butter. 
+
+6. Use the butter knife to take out about 1 tablespoon of peanut butter and spread it on the upward facing sides of one of the pieces of bread. Attempt to spread the peanut butter evenly.
+
+* It does not matter which piece is chosen first, both pieces will receive peanut butter
+
+7. Repeat the previous step, this time spreading the peanut butter on the other piece of bread.
+
+8. Wash or wipe off the residual peanut butter from the butter knife. 
+
+9. Close the container of peanut butter.
+
+10. Open the container of jelly. 
+
+11. Use the butter knife to take out about 1.5 tablespoon of jelly and spread it on top of the peanut butter on one of the pieces of bread. 
+
+12. Dispose of the butter knife in a sink for later cleaning. 
+
+13. Put the two pieces of bread together such that the sides that have been treated with peanut butter and jelly touch on the inside and the dry side of the bread is on the outsides. 
+
+14. Serve the peanut butter and jelly sandwich. 
