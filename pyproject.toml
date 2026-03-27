@@ -6,7 +6,15 @@ authors = ["danield2255 <danield2255@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = ">=3.10,<3.15"
+langchain = "^1.2.13"
+langchain-community = "^0.4.1"
+langchain-openai = "^1.1.12"
+faiss-cpu = "^1.13.2"
+transformers = "^5.4.0"
+sentence-transformers = "^5.3.0"
+langchain-text-splitters = "^1.1.1"
+langchain-huggingface = "^1.2.1"
 
 
 [build-system]
