@@ -15,7 +15,7 @@ class ProtocolAssistant:
         pass
 
     def get_pipeline(self):
-        model_id = "meta-llama/Llama-3.1-8B-Instruct"
+        model_id = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 
         tokenizer = AutoTokenizer.from_pretrained(model_id)
 
@@ -33,6 +33,8 @@ class ProtocolAssistant:
             do_sample=False,
             temperature=0.0,
             return_full_text=False,
+            repetition_penalty=1.1,
+            early_stopping=True
         )
 
         llm = HuggingFacePipeline(
@@ -56,7 +58,7 @@ class ProtocolAssistant:
         prompt = ChatPromptTemplate.from_template("""
             You are a question-answering assistant.
 
-            Answer the user's question using ONLY the provided documentation.
+            Answer the user's question using ONLY the provided documentation. 
 
             Rules:
             - Return EXACTLY one answer.
@@ -82,7 +84,7 @@ class ProtocolAssistant:
                 "context": retriever | format_docs,
                 "question": RunnablePassthrough()
             } | prompt | llm | self.extract_answer)
-        
+            
         # Ensure the chain of thought and answer are clearly separated in the response
         return rag_chain
     
