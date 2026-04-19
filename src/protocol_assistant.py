@@ -15,7 +15,7 @@ class ProtocolAssistant:
         pass
 
     def get_pipeline(self):
-        model_id = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+        model_id = "HuggingFaceTB/SmolLM2-1.7B-Instruct"
 
         tokenizer = AutoTokenizer.from_pretrained(model_id)
 
@@ -53,43 +53,58 @@ class ProtocolAssistant:
 
     def setup_rag_chain(self):
         retriever = docs_to_embeddings(gather_docs())
+        # keep the retriever on the instance so callers can inspect which docs were retrieved
+        self.retriever = retriever
         llm = self.get_pipeline()
 
         prompt = ChatPromptTemplate.from_template("""
             You are a question-answering assistant.
-
-            Answer the user's question using ONLY the provided documentation. 
-
+            
             Rules:
+            - Answer the user's question using ONLY the provided documentation.
             - Return EXACTLY one answer.
             - Do NOT generate multiple questions or examples.
-            - Do NOT add extra commentary.
-            - If the answer is not in the documentation, return exactly: I don't know
-            - Do NOT output anything after </answer>
-
-            Output format:
-            <answer>
-            your answer here
-            </answer>
-
+            
+                                                  
             Documentation:
             {context}
 
             Question:
-            {question}
-            """)
+            {question}""")
+        
+
+        # prompt = ChatPromptTemplate.from_template("""
+        #     You are a question-answering assistant.
+
+        #     Answer the user's question using ONLY the provided documentation. 
+
+        #     Rules:
+        #     - Return EXACTLY one answer.
+        #     - Do NOT generate multiple questions or examples.
+        #     - Do NOT add extra commentary.
+        #     - If the answer is not in the documentation, return exactly: I don't know
+        #     - Do NOT output anything after </answer>
+
+        #     Output format:
+        #     <answer>
+        #     your answer here
+        #     </answer>
+
+        #     Documentation:
+        #     {context}
+
+        #     Question:
+        #     {question}
+        #     """)
 
         rag_chain = (
             {
                 "context": retriever | format_docs,
                 "question": RunnablePassthrough()
-            } | prompt | llm | self.extract_answer)
+            } | prompt | llm )
+            #| self.extract_answer)
             
         # Ensure the chain of thought and answer are clearly separated in the response
         return rag_chain
     
-
-
-
-
 

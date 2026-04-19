@@ -16,6 +16,26 @@ def main():
             raw = response
             print("\nRAW RESPONSE for debugging:")
             print(raw)
+            print("\n-------------")
+
+            # Show which documents the retriever considered for this query (if available)
+            try:
+                if hasattr(assistant, "retriever") and assistant.retriever is not None:
+                    docs_used = assistant.retriever.invoke(query)
+                    print("\nDOCUMENTS USED (top {}):".format(len(docs_used)))
+                    for i, d in enumerate(docs_used, start=1):
+                        src = d.metadata.get("source") if isinstance(d.metadata, dict) else None
+                        preview = d.page_content.replace("\n", " ")[:300].strip()
+                        if src:
+                            print(f"{i}. source={src} — {preview}...")
+                            print("-------")
+                        else:
+                            print(f"{i}. {preview}...")
+                            print("$$$$$$$$$")
+                else:
+                    print("\nNo retriever available on assistant to show documents.")
+            except Exception as e:
+                print("\nCould not fetch documents from retriever:", e)
 
             chain_of_thought = ""
             answer = ""
