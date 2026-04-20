@@ -6,10 +6,11 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 from langchain_huggingface import HuggingFacePipeline
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
+from langchain_ollama import ChatOllama
 
 
 from utils.rag_helpers import gather_docs, docs_to_embeddings, format_docs   
-# from utils.response_format import ResponseFormat
+from utils.response_format import ResponseFormat
 
 
 class ProtocolAssistant:
@@ -17,32 +18,35 @@ class ProtocolAssistant:
         pass
 
     def get_pipeline(self):
-        model_id = "HuggingFaceTB/SmolLM2-1.7B-Instruct"
+        # model_id = "HuggingFaceTB/SmolLM2-1.7B-Instruct"
 
-        tokenizer = AutoTokenizer.from_pretrained(model_id)
+        # tokenizer = AutoTokenizer.from_pretrained(model_id)
+        
 
-        model = AutoModelForCausalLM.from_pretrained(
-            model_id,
-            torch_dtype=torch.float16,
-            device_map="auto"
-        )
+        # model = AutoModelForCausalLM.from_pretrained(
+        #     model_id,
+        #     torch_dtype=torch.float16,
+        #     device_map="auto"
+        # )
 
-        pipe = pipeline(
-            "text-generation",
-            model=model,
-            tokenizer=tokenizer,
-            max_new_tokens=150,
-            do_sample=False,
-            temperature=0.0,
-            return_full_text=False,
-            repetition_penalty=1.1,
-            early_stopping=True
-        )
+        # pipe = pipeline(
+        #     "text-generation",
+        #     model=model,
+        #     tokenizer=tokenizer,
+        #     max_new_tokens=150,
+        #     do_sample=False,
+        #     temperature=0.0,
+        #     return_full_text=False,
+        #     repetition_penalty=1.1,
+        #     early_stopping=True
+        # )
 
-        llm = HuggingFacePipeline(
-            pipeline=pipe,
-            model_kwargs={"stop": ["</answer>"]}
-        )
+        # llm = HuggingFacePipeline(
+        #     pipeline=pipe,
+        #     model_kwargs={"stop": ["</answer>"]}
+        # )
+
+        llm = ChatOllama(model="llama3.2:3b")
 
         return llm
     
@@ -61,15 +65,18 @@ class ProtocolAssistant:
         self.retriever = retriever
         llm = self.get_pipeline()
 
-        # structured_llm = llm.with_structured_output(ResponseFormat)
+        structured_llm = llm.with_structured_output(ResponseFormat)
 
         prompt = ChatPromptTemplate.from_template("""
             You are a helpful question-answering assistant. 
+            You will be provided with documentation and a question.
                                                   
-            Follow these rules when formulating your answer:
+            RULES:
+            - Generate ONE SINGLE answer in a concise manner.
             - Answer the user's question using ONLY the provided documentation.
             - Do NOT generate new questions or examples.
             - If the answer is not explicitly stated in the documentation, say "I don't know".
+                                                  
                                       
             Documentation:
             {context}
@@ -85,7 +92,7 @@ class ProtocolAssistant:
             {
                 "context": retriever | format_docs,
                 "question": RunnablePassthrough()
-            } | prompt | llm )#| self.extract_answer)
+            } | prompt | structured_llm )#| self.extract_answer)
             
         return rag_chain
     

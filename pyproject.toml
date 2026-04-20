@@ -19,6 +19,7 @@ accelerate = "^1.13.0"
 torch = "^2.11.0"
 bitsandbytes = "^0.49.2"
 pydantic = "^2.13.2"
+langchain-ollama = "^1.1.0"
 
 
 [build-system]
