@@ -11,6 +11,7 @@ def main():
             active_conversation = False
             print("Exiting the protocol assistant. Goodbye!")
         else:
+            
             response = rag_chain.invoke(query)
 
             raw = response
@@ -33,9 +34,9 @@ def main():
                             print(f"{i}. {preview}...")
                             print("$$$$$$$$$")
                 else:
-                    print("\nNo retriever available on assistant to show documents.")
+                    print("No retriever available on assistant to show documents.")
             except Exception as e:
-                print("\nCould not fetch documents from retriever:", e)
+                print("Could not fetch documents from retriever:", e)
 
             chain_of_thought = ""
             answer = ""

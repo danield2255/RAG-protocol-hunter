@@ -7,7 +7,9 @@ from langchain_huggingface import HuggingFacePipeline
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnablePassthrough
 
+
 from utils.rag_helpers import gather_docs, docs_to_embeddings, format_docs   
+# from utils.response_format import ResponseFormat
 
 
 class ProtocolAssistant:
@@ -45,6 +47,8 @@ class ProtocolAssistant:
         return llm
     
     def extract_answer(self, text):
+        # print("\nLLM RAW OUTPUT for debugging:")
+        # print(text)
         match = re.search(r"<answer>(.*?)</answer>", text, re.DOTALL)
         if match:
             return match.group(1).strip()
@@ -57,54 +61,32 @@ class ProtocolAssistant:
         self.retriever = retriever
         llm = self.get_pipeline()
 
+        # structured_llm = llm.with_structured_output(ResponseFormat)
+
         prompt = ChatPromptTemplate.from_template("""
-            You are a question-answering assistant.
-            
-            Rules:
-            - Answer the user's question using ONLY the provided documentation.
-            - Return EXACTLY one answer.
-            - Do NOT generate multiple questions or examples.
-            
+            You are a helpful question-answering assistant. 
                                                   
+            Follow these rules when formulating your answer:
+            - Answer the user's question using ONLY the provided documentation.
+            - Do NOT generate new questions or examples.
+            - If the answer is not explicitly stated in the documentation, say "I don't know".
+                                      
             Documentation:
             {context}
 
             Question:
-            {question}""")
+            {question}
+        """)
+
         
-
-        # prompt = ChatPromptTemplate.from_template("""
-        #     You are a question-answering assistant.
-
-        #     Answer the user's question using ONLY the provided documentation. 
-
-        #     Rules:
-        #     - Return EXACTLY one answer.
-        #     - Do NOT generate multiple questions or examples.
-        #     - Do NOT add extra commentary.
-        #     - If the answer is not in the documentation, return exactly: I don't know
-        #     - Do NOT output anything after </answer>
-
-        #     Output format:
-        #     <answer>
-        #     your answer here
-        #     </answer>
-
-        #     Documentation:
-        #     {context}
-
-        #     Question:
-        #     {question}
-        #     """)
+        
 
         rag_chain = (
             {
                 "context": retriever | format_docs,
                 "question": RunnablePassthrough()
-            } | prompt | llm )
-            #| self.extract_answer)
+            } | prompt | llm )#| self.extract_answer)
             
-        # Ensure the chain of thought and answer are clearly separated in the response
         return rag_chain
     
 
